@@ -3,6 +3,17 @@ __author__ = 'Jared'
 
 class evalCmd:
 
+
+
+    '''
+        Function: cmdCheck
+        Parameters:self, commandToEvaluate
+            self: Required by the class.
+            commandToEvaluate: User input that then compares it to available commands and launches
+                               additional methods.
+
+        Return: Nothing, prints status of current funcionality, and (TODO) calls other method.
+    '''
     def cmdCheck(self, commandToEvaluate):
 
         if commandToEvaluate == "quit":
@@ -29,13 +40,14 @@ class evalCmd:
         else:
             print("Invalid command. Try typing help")
 
+
 if __name__ == "__main__":
     print("Welcome to fuzzball, shall we begin?")
-    test = evalCmd()
+    usrCmd = evalCmd()
     while True:
-        command = raw_input(">> ")
+        command = raw_input(">> ") 
         try:
-            test.cmdCheck(command)
+            usrCmd.cmdCheck(command)
         except ValueError as err: 
             print("Sorry, couldn't perform operation.")
 
