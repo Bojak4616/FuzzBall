@@ -2,6 +2,7 @@
 __author__ = 'Jared'
 
 try:
+    import os
     from pcapUtilities.pcapRead import PRead
 except ImportError as err:
     print("Error, cannot find package " + err)
@@ -9,6 +10,9 @@ except ImportError as err:
 pread = PRead()
 
 class evalCmd:
+
+    def __init__(self):
+        self.pcapLoaded = 0 # Variable for determining if a pcap has been loaded.
 
     '''
         Function: cmdCheck
@@ -21,7 +25,7 @@ class evalCmd:
     '''
     def cmdCheck(self, commandToEvaluate):
 
-        if commandToEvaluate == "quit":
+        if commandToEvaluate == "quit" or commandToEvaluate == "exit":
             import sys
             sys.exit()
 
@@ -35,14 +39,19 @@ class evalCmd:
                   """)
         
         elif commandToEvaluate == "load":
-            pcapToLoad = raw_input("Enter name of pcap: ")
-            pread.pcapReader(pcapToLoad)
+            self.pcapToLoad = raw_input("Enter name of pcap: ")
+            pread.pcapReader(self.pcapToLoad)
+            self.pcapLoaded = 1 #Pcap has been loaded. Requried for wireshark functionality.
 
         elif commandToEvaluate == "parse":
             print("TODO: implement parsing")
-
         elif commandToEvaluate == "wireshark":
-            print("TODO: launch wireshark with loaded pcap")
+
+            if self.pcapLoaded == 1: 
+                print("Loading packet: " + self.pcapToLoad)
+                os.system("wireshark " + self.pcapToLoad)
+            else:
+                print("No pcap loaded...")
         else:
             print("Invalid command. Try typing help")
 
@@ -56,5 +65,3 @@ if __name__ == "__main__":
             usrCmd.cmdCheck(command)
         except ValueError as err: 
             print("Sorry, couldn't perform operation.")
-
-
