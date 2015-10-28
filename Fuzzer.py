@@ -1,9 +1,14 @@
 #!/usr/bin/env python
 __author__ = 'Jared'
 
+try:
+    from pcapUtilities.pcapRead import PRead
+except ImportError as err:
+    print("Error, cannot find package " + err)
+
+pread = PRead()
+
 class evalCmd:
-
-
 
     '''
         Function: cmdCheck
@@ -30,7 +35,8 @@ class evalCmd:
                   """)
         
         elif commandToEvaluate == "load":
-            print("TODO: implement loading of PCAP")
+            pcapToLoad = raw_input("Enter name of pcap: ")
+            pread.pcapReader(pcapToLoad)
 
         elif commandToEvaluate == "parse":
             print("TODO: implement parsing")
