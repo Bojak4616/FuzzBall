@@ -7,7 +7,9 @@
 '''
 try:
 	import sys
-        from scapy.all import *
+        from scapy import *
+        from pcapfile import savefile
+
 except ImportError as err:
 	print("[-] Cannot find package %s. Exiting", err)
 	sys.exit()
@@ -34,12 +36,11 @@ class PRead:
         Return: whole packet as a list.
     '''
     def pcapReader(self, pcap):
+        testcap = open(str(pcap))
+        capfile = savefile.load_savefile(testcap, verbose=True)
+        print capfile
 
-        preader = rdpcap(pcap)
-        print(preader)
-
-        return preader
-
+        return capfile
 
     '''
         Name: pcapHexDump
@@ -50,7 +51,6 @@ class PRead:
     '''
     def pcapHexDump(self, pcap):
 
-        preader = rdpcap(pcap)
         print(hexdump(preader))
 
         return hexdump(preader)
