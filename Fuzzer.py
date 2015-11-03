@@ -39,22 +39,22 @@ class evalCmd:
                   """)
         
         elif commandToEvaluate == "load":
-            self.pcapToLoad = raw_input("Enter name of pcap: ")
-            pread.pcapReader(self.pcapToLoad)
+            self.pcap = raw_input("Enter name of pcap: ")
+            pread.pcapReader(self.pcap)
             self.pcapLoaded = 1 #Pcap has been loaded. Requried for wireshark functionality.
 
         elif commandToEvaluate == "parse":
-            print("TODO: implement parsing")
+            pread.pcapHexDump(self.pcap)
+
         elif commandToEvaluate == "wireshark":
 
             if self.pcapLoaded == 1: 
-                print("Loading packet: " + self.pcapToLoad)
-                os.system("wireshark " + self.pcapToLoad)
+                print("Loading packet: " + self.pcap)
+                os.system("wireshark " + self.pcap)
             else:
                 print("No pcap loaded...")
         else:
             print("Invalid command. Try typing help")
-
 
 if __name__ == "__main__":
     print("Welcome to fuzzball, shall we begin?")
