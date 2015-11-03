@@ -1,9 +1,20 @@
 #!/usr/bin/env python
+
+
+
+
+
+
+
+
+
 '''
     Name: pcapRead
     Purpose: Read in pcap file for future
     modification and protocol specific dissection.
 
+    Some methods were taken from the dpkt Python module example Github repo.
+    Source: https://raw.githubusercontent.com/kbandla/dpkt/master/examples/print_packets.py
 '''
 try:
         import socket
@@ -52,7 +63,9 @@ class PRead:
         return ':'.join('%02x' % ord(b) for b in mac_string)
 
     def print_packets(self, pcap):
-        """Print out information about each packet in a pcap
+        """
+            Example taken from: https://raw.githubusercontent.com/kbandla/dpkt/master/examples/print_packets.py
+           Print out information about each packet in a pcap
 
            Args:
                pcap: dpkt pcap reader object (dpkt.pcap.Reader)
@@ -98,9 +111,3 @@ class PRead:
         with open(pcap) as f:
             rpcap = dpkt.pcap.Reader(f)
             self.print_packets(rpcap)
-        
-#TODO
-# Read/write/hexdump functionality. Probably more things I haven't thought of yet.
-
-if __name__ == "__main__":
-	print("Running pcapRead...")
