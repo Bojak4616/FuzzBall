@@ -1,1 +1,3 @@
 scapy-python3==0.14
+pypcapfile==0.10
+dpkt
