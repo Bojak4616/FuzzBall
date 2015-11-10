@@ -2,7 +2,7 @@
 __author__ = 'Jared'
 
 try:
-    import os
+    from subprocess import call
     from pcapUtilities.pcapRead import PRead
 except ImportError as err:
     print("Error, cannot find package " + err)
@@ -33,7 +33,7 @@ class evalCmd:
             print("""
                     load: load a pcap for operations to be performed on.
                     parse: parse a loaded pcap.
-                    wireshark: launch modified pcap in wiresharl.
+                    wireshark: launch modified pcap in wireshark.
                     help: launch this program.
                     quit: exit the program.
                   """)
@@ -50,7 +50,7 @@ class evalCmd:
 
             if self.pcapLoaded == 1: 
                 print("Loading packet: " + self.pcap)
-                os.system("wireshark " + self.pcap)
+                call(["wireshark", self.pcap])
             else:
                 print("No pcap loaded...")
         else:
