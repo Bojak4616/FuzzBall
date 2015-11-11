@@ -31,11 +31,12 @@ class evalCmd:
 
         elif commandToEvaluate == "help":
             print("""
-                    load: load a pcap for operations to be performed on.
-                    parse: parse a loaded pcap.
-                    wireshark: launch modified pcap in wireshark.
-                    help: launch this program.
-                    quit: exit the program.
+                    load: Load a pcap for operations to be performed on.
+                    parse: Parse a loaded pcap.
+                    wireshark: Launch modified pcap in wireshark.
+                    help: Show list of commands.
+                    fuzz: Generate mangled HTTP traffic to test tshark
+                    quit: Exit the program.
                   """)
         
         elif commandToEvaluate == "load":

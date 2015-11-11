@@ -25,7 +25,6 @@
 
 try:
     import sys
-    import requests
     from requests import *    
 except ImportError as err:
     print("Error " + str(err))
@@ -39,18 +38,18 @@ class HTTPUtils():
         Requirements: Python requests library.
     '''
 
-    def __init__(self, URL):
-        self.url = URL 
+    def __init__(self, url):
+        self.url = url
 
-    def bodyReq(self, DATA):
-        r = requests.post(self.url, data = DATA)
+    def bodyReq(self, data):
+        r = requests.post(self.url, data=data)
 
     def urlReq(self, data):
         r = requests.get(self.url, params=data)
         return r.status_code()
 
-    def uaReq(self, UA, data):
-        r = requests.get(self.url, headers=UA, data=data)
+    def uaReq(self, ua, data):
+        r = requests.get(self.url, headers=ua, data=data)
         return r.status_code()
 
 class RandomDataGenerator():
