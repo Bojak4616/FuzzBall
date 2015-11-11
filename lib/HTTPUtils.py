@@ -27,6 +27,7 @@ try:
     import sys
     import requests
     from requests import *    
+    from faker import Factory
 except ImportError as err:
     print("Error " + str(err))
     sys.exit()
@@ -50,7 +51,7 @@ class HTTPUtils():
         return r
 
     def uaReq(self, UA, data):
-        r = requests.get(self.url, headers=UA, data=data)
+        r = requests.post(self.url, headers=UA, data=data)
         return r
 
 class RandomDataGenerator():
@@ -78,9 +79,20 @@ if __name__ == "__main__":
     '''
         Test data generation
     '''
-
-    url = "http://www.gentoocloud.com"
-    data = "LOLOLOLOLOL"
-
+    url = "http://www.comecloserto.me" #Jesbags website :Dj
+    rand = RandomDataGenerator()
     req = HTTPUtils(url)
-    req.bodyReq(data)
+
+    req.bodyReq(rand.nepaliWords())
+    req.bodyReq(rand.turkishWords())
+    req.bodyReq(rand.chineseWords())
+
+    req.urlReq(rand.nepaliWords())
+    req.urlReq(rand.turkishWords())
+    req.urlReq(rand.chineseWords())
+
+#    Must refactor code below. Erors
+#    req.uaReq(rand.nepaliWords(), "")
+#    req.uaReq(rand.turkishWords(), rand.turkishWords())
+#    req.uaReq(rand.chineseWords(), rand.chineseWords())
+
