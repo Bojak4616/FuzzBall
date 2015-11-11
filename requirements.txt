@@ -1,4 +1,4 @@
 scapy-python3==0.14
 requests==2.7.0
-Faker=0.0.4
+faker-factory=0.0.4
 
