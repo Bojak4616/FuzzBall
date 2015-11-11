@@ -47,11 +47,11 @@ class HTTPUtils():
 
     def urlReq(self, data):
         r = requests.get(self.url, params=data)
-        return r.status_code()
+        return r
 
     def uaReq(self, UA, data):
         r = requests.get(self.url, headers=UA, data=data)
-        return r.status_code()
+        return r
 
 class RandomDataGenerator():
 
