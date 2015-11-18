@@ -1,68 +1,73 @@
 #!/usr/bin/env python
-__author__ = 'Jared'
+'''
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+'''
+
+__author__ = "Jared E. Stroud"
 
 try:
-    from subprocess import call
-    from pcapUtilities.pcapRead import PRead
-except ImportError as err:
-    print("Error, cannot find package " + err)
+    from lib.HTTPUtils import HTTPUtils
+    import sys
+    import argparse
+except ImportError as error:
+    print("Error is " + str(error))
 
-pread = PRead()
 
-class evalCmd:
-
-    def __init__(self):
-        self.pcapLoaded = 0 # Variable for determining if a pcap has been loaded.
-
+class cmdEval:
     '''
-        Function: cmdCheck
-        Parameters:self, commandToEvaluate
-            self: Required by the class.
-            commandToEvaluate: User input that then compares it to available commands and launches
-                               additional methods.
-
-        Return: Nothing, prints status of current funcionality, and (TODO) calls other method.
+        Name: cmdEval
+        Purpose: Evaluating user arguments and calling associated methods.
     '''
-    def cmdCheck(self, commandToEvaluate):
 
-        if commandToEvaluate == "quit" or commandToEvaluate == "exit":
-            import sys
+    def fuzzCall(self, usrCmd, address, fuzzData):
+
+        fuzzHTTP = HTTPUtils(str(address))
+
+        command = { 
+                    "http" :  fuzzHTTP.urlReq(str(data))
+                  }
+
+        if usrCmd.lower() not in command.keys(): #If the user supplied argument does not exist as a key, quit.
+            print("Function " + str(usrCmd) + " does not exist!")
             sys.exit()
-
-        elif commandToEvaluate == "help":
-            print("""
-                    load: Load a pcap for operations to be performed on.
-                    parse: Parse a loaded pcap.
-                    wireshark: Launch modified pcap in wireshark.
-                    help: Show list of commands.
-                    fuzz: Generate mangled HTTP traffic to test tshark
-                    quit: Exit the program.
-                  """)
-        
-        elif commandToEvaluate == "load":
-            self.pcap = raw_input("Enter name of pcap: ")
-            pread.pcapReader(self.pcap)
-            self.pcapLoaded = 1 #Pcap has been loaded. Requried for wireshark functionality.
-
-        elif commandToEvaluate == "parse":
-            pread.pcapHexDump(self.pcap)
-
-        elif commandToEvaluate == "wireshark":
-
-            if self.pcapLoaded == 1: 
-                print("Loading packet: " + self.pcap)
-                call(["wireshark", self.pcap])
-            else:
-                print("No pcap loaded...")
         else:
-            print("Invalid command. Try typing help")
+           cmdResult = command.get(str(usrCmd))
+        return cmdResult
 
 if __name__ == "__main__":
-    print("Welcome to fuzzball, shall we begin?")
-    usrCmd = evalCmd()
-    while True:
-        command = raw_input(">> ") 
-        try:
-            usrCmd.cmdCheck(command)
-        except ValueError as err: 
-            print("Sorry, couldn't perform operation.")
+
+
+    cmd = cmdEval()
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--dst", nargs=1, required=True,  help="Specify the destination address") 
+    parser.add_argument("--fuzz", nargs=1, required=True, help="Specify the protocol to Fuzz(Ex: HTTP, FTP)") 
+    parser.add_argument("--data", nargs=1, required=True, help="Specify the data to be sent") 
+    args = parser.parse_args()
+
+    if args.dst and args.fuzz:
+        data = ''.join(args.data) #Removes list bindings.
+        dst =  ''.join(args.dst) #Removes list bindings.
+        fuzz = ''.join(args.fuzz) #Removes list bindings.
+
+        print ("[+] Destination is : " + str(dst))
+        print ("[+] Scan running is : " + str(fuzz))
+        print ("[+] Data being sent is : " + str(data))
+        cmd.fuzzCall(fuzz, dst, data)
