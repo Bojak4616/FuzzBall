@@ -25,6 +25,7 @@ __author__ = "Jared E. Stroud"
 
 try:
     from lib.HTTPUtils import HTTPUtils
+    import subprocess
     import sys
     import argparse
 except ImportError as error:
@@ -37,7 +38,7 @@ class cmdEval:
         Purpose: Evaluating user arguments and calling associated methods.
     '''
 
-    def fuzzCall(self, usrCmd, address, fuzzData):
+    def fuzzCallHTTP(self, usrCmd, address, fuzzData):
 
         fuzzHTTP = HTTPUtils(str(address))
 
@@ -52,22 +53,30 @@ class cmdEval:
            cmdResult = command.get(str(usrCmd))
         return cmdResult
 
+
+#    def fuzzTshark(self, usrCmd, fuzzData):
+#    Soon
+
 if __name__ == "__main__":
 
 
     cmd = cmdEval()
     parser = argparse.ArgumentParser()
-    parser.add_argument("--dst", nargs=1, required=True,  help="Specify the destination address") 
+    parser.add_argument("--dst",  nargs=1, required=True, help="Specify the destination address or 127.0.0.1 for tshark")
     parser.add_argument("--fuzz", nargs=1, required=True, help="Specify the protocol to Fuzz(Ex: HTTP, FTP)") 
-    parser.add_argument("--data", nargs=1, required=True, help="Specify the data to be sent") 
+    parser.add_argument("--data", nargs=1, required=True, help="Specify the data to be sent or seed for tshark")
     args = parser.parse_args()
 
     if args.dst and args.fuzz:
         data = ''.join(args.data) #Removes list bindings.
-        dst =  ''.join(args.dst) #Removes list bindings.
+        dst =  ''.join(args.dst)  #Removes list bindings.
         fuzz = ''.join(args.fuzz) #Removes list bindings.
 
         print ("[+] Destination is : " + str(dst))
         print ("[+] Scan running is : " + str(fuzz))
         print ("[+] Data being sent is : " + str(data))
-        cmd.fuzzCall(fuzz, dst, data)
+
+        """if str(dst) == "127.0.0.1":
+            cmd.fuzzTshark(fuzz, data)
+        else:"""
+        cmd.fuzzCallHTTP(fuzz, dst, data)
