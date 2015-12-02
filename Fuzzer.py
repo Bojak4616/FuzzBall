@@ -88,7 +88,7 @@ if __name__ == "__main__":
     parser.add_argument("--data", nargs=1, required=True, help="Specify the data to be sent or a seed for tshark")
     args = parser.parse_args()
     """Sample Commandline: sudo ./Fuzzer.py --dst 127.0.0.1 --fuzz HTTP --data seed"""
-    
+
     if args.dst and args.fuzz:
         data = ''.join(args.data) #Removes list bindings.
         dst  = ''.join(args.dst)  #Removes list bindings.
