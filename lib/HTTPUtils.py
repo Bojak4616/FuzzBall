@@ -24,11 +24,11 @@
 '''
 
 try:
-    import sys
     import requests
     import random
-    import binascii
-    from scapy.all import IP, TCP, hexdump, send
+    import sys
+    from time import sleep
+    from scapy.all import IP, TCP, send
 except ImportError as err:
     print("Error " + str(err))
     sys.exit()
@@ -69,14 +69,18 @@ class MalformHttpPacket():
 
     def randomData(self):
         randData = ""
+        methods = ['GET', 'OPTIONS', 'PUT', 'POST', 'HEAD', 'DELETE', 'TRACE']
+        returns = '\r\n\r\n'
 
-        for i in range(1, random.randrange(1, 12000)):
+        for i in range(1, random.randrange(1, 120000)):
             randData += str(hex(random.randrange(0, 15)))[2:]
 
         if len(randData) % 2 != 0:
             randData += str(hex(random.randrange(0, 15)))[2:]
 
-        self.packet = IP(src="127.0.0.1", dst="127.0.0.1")/TCP(dport=80)/randData.decode('hex')
+        data = methods[random.randrange(0, 6)] + ' ' + randData.decode('hex') + returns
+
+        self.packet = IP(src="127.0.0.1", dst="127.0.0.1")/TCP(dport=80)/data
         return self.packet
 
 
@@ -84,11 +88,15 @@ if __name__ == "__main__":
     '''
         Sending weird payloaded packets of varying size over the wire.
         Start tell tshark to listen on loopback and congratz! you're kind of fuzzing
+        ***Must run with sudo***
+
+        More research needs to be done to get it to use the http dissector all the time.
+        Invokes the http dissector about 50% of the time
     '''
 
-    p = MalformHttpPacket("SEEEEED")
+    p = MalformHttpPacket("SEED")
     while(1):
         send(p.randomData())
         print "[+] Packet Sent"
-
+        sleep(2)
 
