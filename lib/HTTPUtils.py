@@ -26,8 +26,9 @@
 try:
     import sys
     import requests
-    from requests import *    
-    from faker import Factory
+    import random
+    import binascii
+    from scapy.all import IP, TCP, hexdump, send
 except ImportError as err:
     print("Error " + str(err))
     sys.exit()
@@ -45,6 +46,7 @@ class HTTPUtils():
 
     def bodyReq(self, DATA):
         r = requests.post(self.url, data = DATA)
+        return r
 
     def urlReq(self, data):
         r = requests.get(self.url, params=data)
@@ -54,45 +56,39 @@ class HTTPUtils():
         r = requests.post(self.url, headers=UA, data=data)
         return r
 
-class RandomDataGenerator():
+
+class MalformHttpPacket():
 
     '''
-        Name: RandomDataGenerator
-        Purpose: Generating random text in a variety of languages 
-                 to send to an end point. This should be used in conjunction
-                 with the HTTPUtils in order to create unique body POST requests.
+        Name: malformPacket
+        Purpose: Creates malformed packets to be fed into tshark
     '''
+    def __init__(self, data):
+        p = IP(src="127.0.0.1", dst="127.0.0.1")/TCP(dport=80)/str(data)
+        self.packet = p
 
-    def nepaliWords(self):
-        fake = Factory.create('ne_NP')
-        return fake.text()
+    def randomData(self):
+        randData = ""
 
-    def turkishWords(self):
-        fake = Factory.create('tr_TR')
-        return fake.text()
+        for i in range(1, random.randrange(1, 12000)):
+            randData += str(hex(random.randrange(0, 15)))[2:]
 
-    def chineseWords(self):
-        fake = Factory.create('zh_CN')
-        return fake.text()
+        if len(randData) % 2 != 0:
+            randData += str(hex(random.randrange(0, 15)))[2:]
+
+        self.packet = IP(src="127.0.0.1", dst="127.0.0.1")/TCP(dport=80)/randData.decode('hex')
+        return self.packet
+
 
 if __name__ == "__main__":
     '''
-        Test data generation
+        Sending weird payloaded packets of varying size over the wire.
+        Start tell tshark to listen on loopback and congratz! you're kind of fuzzing
     '''
-    url = "http://www.comecloserto.me" #Jesbags website :Dj
-    rand = RandomDataGenerator()
-    req = HTTPUtils(url)
 
-    req.bodyReq(rand.nepaliWords())
-    req.bodyReq(rand.turkishWords())
-    req.bodyReq(rand.chineseWords())
+    p = MalformHttpPacket("SEEEEED")
+    while(1):
+        send(p.randomData())
+        print "[+] Packet Sent"
 
-    req.urlReq(rand.nepaliWords())
-    req.urlReq(rand.turkishWords())
-    req.urlReq(rand.chineseWords())
-
-#    Must refactor code below. Erors
-#    req.uaReq(rand.nepaliWords(), "")
-#    req.uaReq(rand.turkishWords(), rand.turkishWords())
-#    req.uaReq(rand.chineseWords(), rand.chineseWords())
 
