@@ -24,6 +24,7 @@
 '''
 
 try:
+    import os
     import sys
     import requests
     from requests import *    
@@ -61,19 +62,36 @@ class RandomDataGenerator():
         Purpose: Generating random text in a variety of languages 
                  to send to an end point. This should be used in conjunction
                  with the HTTPUtils in order to create unique body POST requests.
+
+        Use-case: Can be used to test unicode support against web application. 
     '''
 
     def nepaliWords(self):
-        fake = Factory.create('ne_NP')
-        return fake.text()
+        '''
+            Generating Nepal paragraphs.
+        '''
+        return Factory.create('ne_NP').text()
 
     def turkishWords(self):
-        fake = Factory.create('tr_TR')
-        return fake.text()
+        '''
+            Generating Turksih paragraphs.
+        '''
+        return Factory.create('tr_TR').text()
 
     def chineseWords(self):
-        fake = Factory.create('zh_CN')
-        return fake.text()
+        '''
+            Generating Chinese paragraphs.
+        '''
+        return Factory.create('zh_CN').text()
+
+    def devRand(self, numBytes=50):
+        '''
+            Portable way to return random bytes.
+            Linux/Unix uses /dev/urandom
+            Windows: CryptGetRandom()
+        '''
+        return os.urandom(numBytes)
+
 
 if __name__ == "__main__":
     '''
@@ -94,5 +112,5 @@ if __name__ == "__main__":
 #    Must refactor code below. Erors
 #    req.uaReq(rand.nepaliWords(), "")
 #    req.uaReq(rand.turkishWords(), rand.turkishWords())
-#    req.uaReq(rand.chineseWords(), rand.chineseWords())
+    req.uaReq(rand.chineseWords(), rand.chineseWords())
 
