@@ -70,4 +70,9 @@ if __name__ == "__main__":
         print ("[+] Destination is : " + str(dst))
         print ("[+] Scan running is : " + str(fuzz))
         print ("[+] Data being sent is : " + str(data))
-        cmd.fuzzCall(fuzz, dst, data)
+
+        try:
+            cmd.fuzzCall(fuzz, dst, data)
+        except ValueError:
+            print('''[-] Error, incorrect syntax.\nTry ./Fuzzer -h.\n 
+                 ./Fuzzer --dst http://localhost --fuzz http --data lolcakes''')
