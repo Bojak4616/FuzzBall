@@ -29,7 +29,7 @@ try:
     import argparse
 except ImportError as error:
     print("Error is " + str(error))
-
+    #TODO: Specific instructions for "Error: cannot import name rand"
 
 class cmdEval:
     '''
