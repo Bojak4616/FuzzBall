@@ -3,5 +3,4 @@ pypcapfile==0.10
 dpkt==1.8.6.2
 requests==2.7.0
 faker==0.0.4
-requests==2.7.0
 fake-factory
