@@ -26,6 +26,7 @@
 try:
     import os
     import sys
+    import socket
     import requests
 except ImportError as err:
     print("Error " + str(err))
@@ -53,8 +54,29 @@ class HTTPUtils():
         r = requests.post(self.url, headers=UA, data=data)
         return r
 
-class RandomDataGenerator():
 
+class RawHTTPUtils():
+    '''
+        Name: RawHTTPUtils
+        Description: HTTP requests using only socket.
+        Requirements: Socket.
+    '''
+    def __init__(self, address, port):
+        self.addr = str(address)
+        self.port = int(port)
+
+    def rawGet(self, data="\x90\x90"):
+        '''
+            Name: rawGet
+            Description: GET request using sockets.
+            Parameters: string value (data)
+        '''
+        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        sock.bind((self.addr, self.port))
+        #sock.send()
+
+
+class RandomDataGenerator():
     '''
         Name: RandomDataGenerator
         Purpose: Generating random text in a variety of languages 
@@ -64,7 +86,7 @@ class RandomDataGenerator():
         Use-case: Can be used to test unicode support against web application. 
     '''
 
-   def devRand(self, numBytes=50):
+    def devRand(self, numBytes=50):
         '''
             Portable way to return random bytes.
             Linux/Unix uses /dev/urandom
