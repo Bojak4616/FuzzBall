@@ -27,8 +27,6 @@ try:
     import os
     import sys
     import requests
-    from requests import *    
-    from faker import Factory
 except ImportError as err:
     print("Error " + str(err))
     sys.exit()
@@ -66,25 +64,7 @@ class RandomDataGenerator():
         Use-case: Can be used to test unicode support against web application. 
     '''
 
-    def nepaliWords(self):
-        '''
-            Generating Nepal paragraphs.
-        '''
-        return Factory.create('ne_NP').text()
-
-    def turkishWords(self):
-        '''
-            Generating Turksih paragraphs.
-        '''
-        return Factory.create('tr_TR').text()
-
-    def chineseWords(self):
-        '''
-            Generating Chinese paragraphs.
-        '''
-        return Factory.create('zh_CN').text()
-
-    def devRand(self, numBytes=50):
+   def devRand(self, numBytes=50):
         '''
             Portable way to return random bytes.
             Linux/Unix uses /dev/urandom
@@ -100,17 +80,3 @@ if __name__ == "__main__":
     url = "http://www.comecloserto.me" #Jesbags website :Dj
     rand = RandomDataGenerator()
     req = HTTPUtils(url)
-
-    req.bodyReq(rand.nepaliWords())
-    req.bodyReq(rand.turkishWords())
-    req.bodyReq(rand.chineseWords())
-
-    req.urlReq(rand.nepaliWords())
-    req.urlReq(rand.turkishWords())
-    req.urlReq(rand.chineseWords())
-
-#    Must refactor code below. Erors
-#    req.uaReq(rand.nepaliWords(), "")
-#    req.uaReq(rand.turkishWords(), rand.turkishWords())
-    req.uaReq(rand.chineseWords(), rand.chineseWords())
-
