@@ -75,6 +75,17 @@ class RawHTTPUtils():
         sock.bind((self.addr, self.port))
         #sock.send()
 
+    def rawHead(self, data="HEAD / HTTP/1.1\n"):
+        '''
+            Name: rawHead
+            Description: rawHead request using sockets.
+            Parameters: string value (data)
+        '''
+        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        sock.connect((self.addr, self.port))
+        sock.send(data)
+
+
 
 class RandomDataGenerator():
     '''
@@ -99,6 +110,8 @@ if __name__ == "__main__":
     '''
         Test data generation
     '''
-    url = "http://www.comecloserto.me" #Jesbags website :Dj
-    rand = RandomDataGenerator()
-    req = HTTPUtils(url)
+    url = "localhost" 
+
+    req = RawHTTPUtils(url, 8000)
+    #req = HTTPUtils(url)
+    req.rawHead()
