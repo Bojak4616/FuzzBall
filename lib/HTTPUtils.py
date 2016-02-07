@@ -43,6 +43,7 @@ class HTTPUtils():
     def __init__(self, URL):
         self.url = URL 
 
+
     def bodyReq(self, DATA):
         r = requests.post(self.url, data = DATA)
 
@@ -64,6 +65,7 @@ class RawHTTPUtils():
     def __init__(self, address, port):
         self.addr = str(address)
         self.port = int(port)
+        self.CRLF = "\r\n\r\n"
 
     def rawGet(self, data="\x90\x90"):
         '''
@@ -72,10 +74,10 @@ class RawHTTPUtils():
             Parameters: string value (data)
         '''
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        sock.bind((self.addr, self.port))
-        #sock.send()
+        test = "GET / HTTP/1.1" + self.CRLF
+        sock.send(test)
 
-    def rawHead(self, data="HEAD / HTTP/1.1\n"):
+    def rawHead(self, data="HEAD / HTTP/1.1"):
         '''
             Name: rawHead
             Description: rawHead request using sockets.
