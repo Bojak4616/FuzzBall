@@ -105,7 +105,32 @@ class RawHTTPUtils():
             Description: rawHead request using sockets.
             Parameters: None.
         '''
-        self.sock.send("HEAD HTTP/1.1\r\nHost: %s\r\n\r\n") 
+        self.sock.send("HEAD HTTP/1.1\r\nHost: %s\r\n\r\n" % self.host)
+
+    def rawPost(self):
+        '''
+            Name: rawPost
+            Description: rawHead request using sockets
+            Parameters: None.
+        '''
+        headers = """\
+        POST /auth HTTP/1.1\r
+        Content-Type: {content_type}\r
+        Content-Length: {content_length}\r
+        Host: {host}\r
+        Connection: close\r
+        \r\n"""
+
+        body = 'username=Fuzz&password=Pass'
+        body_bytes = body.encode('assci')
+        header_bytes = headers.format(
+            content_type="application/x-www-form-urlencoded",
+            content_length=len(body_bytes),
+            host=self.addr + ":" + self.port
+        ).encode('iso-8859-1')
+
+        payload = header_bytes +  body_bytes
+        self.sock.sendall(payload)
 
 class RandomDataGenerator():
     '''

