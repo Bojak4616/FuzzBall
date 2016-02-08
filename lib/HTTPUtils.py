@@ -75,11 +75,11 @@ class RawHTTPUtils():
         '''
         self.sock.send("GET %s HTTP/1.1\r\nHost: %s\r\n\r\n" % (data, self.host))
 
-    def rawHead(self, data="HEAD / HTTP/1.1"):
+    def rawHead(self):
         '''
             Name: rawHead
             Description: rawHead request using sockets.
-            Parameters: string value (data)
+            Parameters: None.
         '''
 
         self.sock.send("HEAD HTTP/1.1\r\nHost: %s\r\n\r\n") 
