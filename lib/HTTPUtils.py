@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 '''
-    Author: Jared Stroud
-
+    Author: Jared Stroud 
     Permission is hereby granted, free of charge, to any person obtaining a copy
     of this software and associated documentation files (the "Software"), to deal
     in the Software without restriction, including without limitation the rights
@@ -23,14 +22,9 @@
     THE SOFTWARE.
 '''
 
-try:
-    import os
-    import sys
-    import socket
-    import requests
-except ImportError as err:
-    print("Error " + str(err))
-    sys.exit()
+import os
+import sys
+import socket
 
 class HTTPUtils():
 
@@ -65,17 +59,21 @@ class RawHTTPUtils():
     def __init__(self, address, port):
         self.addr = str(address)
         self.port = int(port)
-        self.CRLF = "\r\n\r\n"
+        self.host = "Fuzzball v1"
 
-    def rawGet(self, data="\x90\x90"):
+        try:
+            self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            self.sock.connect((self.addr, self.port))
+        except socket.error as msg:
+            print("[ERROR] %s " % msg)
+
+    def rawGet(self, data="/index.html"):
         '''
             Name: rawGet
             Description: GET request using sockets.
             Parameters: string value (data)
         '''
-        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        test = "GET / HTTP/1.1" + self.CRLF
-        sock.send(test)
+        self.sock.send("GET %s HTTP/1.1\r\nHost: %s\r\n\r\n" % (data, self.host))
 
     def rawHead(self, data="HEAD / HTTP/1.1"):
         '''
@@ -83,10 +81,18 @@ class RawHTTPUtils():
             Description: rawHead request using sockets.
             Parameters: string value (data)
         '''
-        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        sock.connect((self.addr, self.port))
-        sock.send(data)
 
+        test = "HEAD / HTTP/1.1\n"\
+                "Host: localhost\n"\
+                "User-Agent: Python\n"\
+                "Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8\n"\
+                "Accept-Language: en-us,en;q=0.5\n"\
+                "Accept-Encoding: gzip,deflate\n"\
+                "Accept-Charset: ISO-8859-1,utf-8;q=0.7,*;q=0.7\n"\
+                "Keep-Alive: 115\n"\
+                "Connection: keey-alive\n"
+
+        sock.send(test)
 
 
 class RandomDataGenerator():
@@ -116,4 +122,4 @@ if __name__ == "__main__":
 
     req = RawHTTPUtils(url, 8000)
     #req = HTTPUtils(url)
-    req.rawHead()
+    req.rawGet()
