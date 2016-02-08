@@ -82,17 +82,7 @@ class RawHTTPUtils():
             Parameters: string value (data)
         '''
 
-        test = "HEAD / HTTP/1.1\n"\
-                "Host: localhost\n"\
-                "User-Agent: Python\n"\
-                "Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8\n"\
-                "Accept-Language: en-us,en;q=0.5\n"\
-                "Accept-Encoding: gzip,deflate\n"\
-                "Accept-Charset: ISO-8859-1,utf-8;q=0.7,*;q=0.7\n"\
-                "Keep-Alive: 115\n"\
-                "Connection: keey-alive\n"
-
-        sock.send(test)
+        self.sock.send("HEAD HTTP/1.1\r\nHost: %s\r\n\r\n") 
 
 
 class RandomDataGenerator():
@@ -119,7 +109,5 @@ if __name__ == "__main__":
         Test data generation
     '''
     url = "localhost" 
-
     req = RawHTTPUtils(url, 8000)
-    #req = HTTPUtils(url)
-    req.rawGet()
+    req.rawHead()
