@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/python2.7
 '''
     Author: Jared Stroud 
     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -66,6 +66,18 @@ class RawHTTPUtils():
             self.sock.connect((self.addr, self.port))
         except socket.error as msg:
             print("[ERROR] %s " % msg)
+            sys.exit(0)
+
+    def readEvilStrings(self, stringFile="EvilStrings.txt"):
+        '''
+            Name: readEvilStrings
+            Parameters: stringFile: Where the evil strings are kept.
+            Return: List of strings.
+        '''
+        with open(stringFile) as fin:
+            stringList = fin.readlines()
+
+        return (stringList)
 
     def rawGet(self, data="/index.html"):
         '''
@@ -73,7 +85,19 @@ class RawHTTPUtils():
             Description: GET request using sockets.
             Parameters: string value (data)
         '''
-        self.sock.send("GET %s HTTP/1.1\r\nHost: %s\r\n\r\n" % (data, self.host))
+        self.sock.send('GET %s HTTP/1.1\r\nHost: %s\r\n\r\n' % (data, self.host))
+
+    def stringGet(self):
+        '''
+            Name: stringGet
+            Parameters: self.
+            Return: Nothing
+        '''
+        evilContents = self.readEvilStrings()
+
+        for data in evilContents:
+            print("[+] Sent %s to %s" % (data, self.addr))
+            self.rawGet(data)
 
     def rawHead(self):
         '''
@@ -81,9 +105,32 @@ class RawHTTPUtils():
             Description: rawHead request using sockets.
             Parameters: None.
         '''
+        self.sock.send("HEAD HTTP/1.1\r\nHost: %s\r\n\r\n" % self.host)
 
-        self.sock.send("HEAD HTTP/1.1\r\nHost: %s\r\n\r\n") 
+    def rawPost(self):
+        '''
+            Name: rawPost
+            Description: rawHead request using sockets
+            Parameters: None.
+        '''
+        headers = """\
+        POST /auth HTTP/1.1\r
+        Content-Type: {content_type}\r
+        Content-Length: {content_length}\r
+        Host: {host}\r
+        Connection: close\r
+        \r\n"""
 
+        body = 'username=Fuzz&password=Pass'
+        body_bytes = body.encode('assci')
+        header_bytes = headers.format(
+            content_type="application/x-www-form-urlencoded",
+            content_length=len(body_bytes),
+            host=self.addr + ":" + self.port
+        ).encode('iso-8859-1')
+
+        payload = header_bytes +  body_bytes
+        self.sock.sendall(payload)
 
 class RandomDataGenerator():
     '''
@@ -110,4 +157,6 @@ if __name__ == "__main__":
     '''
     url = "localhost" 
     req = RawHTTPUtils(url, 8000)
-    req.rawHead()
+    #req.rawHead()
+    req.stringGet()
+

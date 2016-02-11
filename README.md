@@ -12,7 +12,11 @@ python -m SimpleHTTPServer
 
 
 ```
-./fuzzer --dst http://localhost --fuzz http --data "testData" 
+python Fuzzer.py --dst http://localhost --fuzz http --data "testData"
+
+or
+
+./Fuzzer --dst http://localhost --fuzz http --data "testData" 
 
 ```
 
