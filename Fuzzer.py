@@ -64,6 +64,7 @@ if __name__ == "__main__":
     cmd = cmdEval()
     parser = argparse.ArgumentParser()
     parser.add_argument("--dst", nargs=1, required=True,  help="Specify the destination address") 
+    parser.add_argument("--identify", nargs=1, required=false,  help="Attempt to profile a web server.") 
     parser.add_argument("--port", nargs=1, required=False,  help="Specify the destination port", default=80) 
     parser.add_argument("--fuzz", nargs=1, required=True, help="Specify the protocol to Fuzz(Ex: HTTP, FTP)")
     parser.add_argument("--data", nargs=1, required=True, help="Specify the data to be sent")
@@ -86,3 +87,5 @@ if __name__ == "__main__":
         except ValueError:
             print("[-] Error, incorrect syntax.\nTry ./Fuzzer -h.\n"\
                  "./Fuzzer --dst http://localhost --fuzz http --data lolcakes")
+    elif args.dst and args.identify:
+        print("[+] Profiling webserver")
