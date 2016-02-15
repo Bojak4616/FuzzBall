@@ -26,30 +26,6 @@ import os
 import sys
 import socket
 
-class HTTPUtils():
-
-    '''
-        Name: HTTPUtils
-        Description: HTTP library used to create and manipulate requests to end points.
-        Requirements: Python requests library.
-    '''
-
-    def __init__(self, URL):
-        self.url = URL 
-
-
-    def bodyReq(self, DATA):
-        r = requests.post(self.url, data = DATA)
-
-    def urlReq(self, data):
-        r = requests.get(self.url, params=data)
-        return r
-
-    def uaReq(self, UA, data):
-        r = requests.post(self.url, headers=UA, data=data)
-        return r
-
-
 class RawHTTPUtils():
     '''
         Name: RawHTTPUtils
@@ -159,4 +135,3 @@ if __name__ == "__main__":
     req = RawHTTPUtils(url, 8000)
     #req.rawHead()
     req.stringGet()
-
