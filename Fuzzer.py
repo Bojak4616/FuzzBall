@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/python2.7
 '''
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -24,12 +24,13 @@ THE SOFTWARE.
 __author__ = "Jared E. Stroud"
 
 try:
-    from lib.HTTPUtils import HTTPUtils
     import sys
-    import argparse
+    import argparse 
+    import random
+    from lib.HTTPUtils import RawHTTPUtils
 except ImportError as error:
-    print("Error is " + str(error))
-    #TODO: Specific instructions for "Error: cannot import name rand"
+    print("Error is %s" % error)
+    sys.exit()
 
 class cmdEval:
     '''
@@ -38,15 +39,21 @@ class cmdEval:
     '''
 
     def fuzzCall(self, usrCmd, address, fuzzData):
+        '''
+            Name:fuzzCall
+            Parameters: usrCmd (user specified command)
+                        address (ip address)
+                        fuzzData (data to send)
+        '''
 
-        fuzzHTTP = HTTPUtils(str(address))
+        fuzzHTTP = RawHTTPUtils(str(address), 80)
 
         command = { 
-                    "http" :  fuzzHTTP.urlReq(str(data))
+                    "http" :  fuzzHTTP.rawGet()
                   }
 
-        if usrCmd.lower() not in command.keys(): #If the user supplied argument does not exist as a key, quit.
-            print("Function " + str(usrCmd) + " does not exist!")
+        if usrCmd.lower() not in command.keys(): # If the user supplied argument does not exist as a key, quit.
+            print("Function %s does not exist!\n" % usrCmd)
             sys.exit()
         else:
            cmdResult = command.get(str(usrCmd))
