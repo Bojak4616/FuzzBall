@@ -63,15 +63,18 @@ if __name__ == "__main__":
 
     cmd = cmdEval()
     parser = argparse.ArgumentParser()
-    parser.add_argument("--dst", nargs=1, required=True,  help="Specify the destination address") 
-    parser.add_argument("--identify", nargs=1, required=false,  help="Attempt to profile a web server.") 
+    parser.add_argument("--dst", nargs=1, required=False,  help="Specify the destination address") 
+    parser.add_argument("--identify", required=False,  help="Attempt to profile a web server.") 
     parser.add_argument("--port", nargs=1, required=False,  help="Specify the destination port", default=80) 
-    parser.add_argument("--fuzz", nargs=1, required=True, help="Specify the protocol to Fuzz(Ex: HTTP, FTP)")
-    parser.add_argument("--data", nargs=1, required=True, help="Specify the data to be sent")
+    parser.add_argument("--fuzz", nargs=1, required=False, help="Specify the protocol to Fuzz(Ex: HTTP, FTP)")
+    parser.add_argument("--data", nargs=1, required=False, help="Specify the data to be sent")
     parser.add_argument("--threads", nargs=1, required=False, help="Specify the number of threads to Fuzz with.", type=int, default=1)
     args = parser.parse_args()
 
-    if args.dst and args.fuzz:
+    if (args.identify and args.dst):
+        print("[+] Profiling webserver")
+        sys.exit()
+    elif args.dst and args.fuzz:
         data = ''.join(args.data) # Removes list bindings.
         dst =  ''.join(args.dst)  # Removes list bindings.
         fuzz = ''.join(args.fuzz) # Removes list bindings.
@@ -87,5 +90,6 @@ if __name__ == "__main__":
         except ValueError:
             print("[-] Error, incorrect syntax.\nTry ./Fuzzer -h.\n"\
                  "./Fuzzer --dst http://localhost --fuzz http --data lolcakes")
-    elif args.dst and args.identify:
-        print("[+] Profiling webserver")
+    else:
+        print("[-] Error, I didn't understand what you wanted to do!")
+        sys.exit()
