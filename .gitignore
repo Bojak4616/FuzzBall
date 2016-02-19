@@ -1,3 +1,7 @@
 *.pyc
 *.idea/*
 *.idea*
+.Python
+bin/
+lib/python2.7/
+include/
