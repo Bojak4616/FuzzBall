@@ -36,7 +36,6 @@ class RawHTTPUtils():
         self.addr = str(address)
         self.port = int(port)
         self.host = "Fuzzball v1"
-
         try:
             self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             self.sock.connect((self.addr, self.port))
