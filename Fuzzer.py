@@ -27,6 +27,8 @@ try:
     import sys
     import argparse 
     import random
+    import threading
+
     from lib.HTTPUtils import RawHTTPUtils
 except ImportError as error:
     print("Error is %s" % error)
@@ -44,10 +46,9 @@ class cmdEval:
             Parameters: usrCmd (user specified command)
                         address (ip address)
                         fuzzData (data to send)
-        '''
-
+        ''' 
         fuzzHTTP = RawHTTPUtils(str(address), int(port))
-
+        print "2"
         command = { 
                     "http" :  fuzzHTTP.rawGet()
                   }
@@ -68,7 +69,7 @@ if __name__ == "__main__":
     parser.add_argument("--port", nargs=1, required=False,  help="Specify the destination port", default=80) 
     parser.add_argument("--fuzz", nargs=1, required=False, help="Specify the protocol to Fuzz(Ex: HTTP, FTP)")
     parser.add_argument("--data", nargs=1, required=False, help="Specify the data to be sent")
-    parser.add_argument("--threads", nargs=1, required=False, help="Specify the number of threads to Fuzz with.", type=int, default=1)
+    parser.add_argument("--threads", nargs=1, required=False, help="Specify the number of threads to Fuzz with.", default=1)
     args = parser.parse_args()
 
     if (args.identify and args.dst):
@@ -79,17 +80,27 @@ if __name__ == "__main__":
         dst =  ''.join(args.dst)  # Removes list bindings.
         fuzz = ''.join(args.fuzz) # Removes list bindings.
         port = ''.join(args.port) # Removes list bindings.
-        threads = ''.join(str(args.threads)) # Removes list bindings.
+        if args.threads == 1:
+            threads = ''.join(str(args.threads))
+        else:
+            threads = ''.join(args.threads)
 
+        print port
         print ("[+] Destination is : %s\n"\
                "[+] Scan running is : %s\n"\
                "[+] Data being sent is : %s\n"\
-               "[+] Number of Threads used is : %s\n" % (dst, fuzz, data, threads))
+               "[+] Destination Port is : %s\n"\
+               "[+] Number of Threads used is : %s\n" % (dst, fuzz, data, port, threads))
         try:
-            cmd.fuzzCall(fuzz, dst, data, int(port))
-        except ValueError:
+            #cmd.fuzzCall(fuzz, dst, data, int(port))
+            for i in range(int(threads)):
+                t = threading.Thread(target=cmd.fuzzCall, args=(fuzz, dst, data, int(port)))
+                t.start()
+
+        except ValueError,e:
             print("[-] Error, incorrect syntax.\nTry ./Fuzzer -h.\n"\
                  "./Fuzzer --dst http://localhost --fuzz http --data lolcakes")
+            print str(e)
     else:
         print("[-] Error, I didn't understand what you wanted to do!")
         sys.exit()
