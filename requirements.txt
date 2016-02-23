@@ -1,2 +1,0 @@
-scapy-python3==0.18
-requests==2.7.0
