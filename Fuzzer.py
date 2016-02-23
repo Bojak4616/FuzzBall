@@ -21,7 +21,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 '''
 
-__author__ = "Jared E. Stroud"
+__author__ = "Jared E. Stroud, Jon Meyers"
 
 try:
     import sys
@@ -48,9 +48,8 @@ class cmdEval:
                         fuzzData (data to send)
         ''' 
         fuzzHTTP = RawHTTPUtils(str(address), int(port))
-        print "2"
         command = { 
-                    "http" :  fuzzHTTP.rawGet()
+                    "http" :  fuzzHTTP.rawGet(fuzzData)
                   }
 
         if usrCmd.lower() not in command.keys(): # If the user supplied argument does not exist as a key, quit.
@@ -72,6 +71,7 @@ if __name__ == "__main__":
     parser.add_argument("--threads", nargs=1, required=False, help="Specify the number of threads to Fuzz with.", default=1)
     args = parser.parse_args()
 
+    ### Identifiying user given commands.
     if (args.identify and args.dst):
         print("[+] Profiling webserver")
         sys.exit()
@@ -85,7 +85,6 @@ if __name__ == "__main__":
         else:
             threads = ''.join(args.threads)
 
-        print port
         print ("[+] Destination is : %s\n"\
                "[+] Scan running is : %s\n"\
                "[+] Data being sent is : %s\n"\
