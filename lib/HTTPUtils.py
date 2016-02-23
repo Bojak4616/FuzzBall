@@ -82,19 +82,23 @@ class RawHTTPUtils():
         '''
         self.sock.send("HEAD HTTP/1.1\r\nHost: %s\r\n\r\n" % self.host)
 
-    def rawPost(self):
+    def rawPost(self, reqURI="index.html", content_type="text/html", content_length=40, host):
         '''
             Name: rawPost
             Description: rawHead request using sockets
-            Parameters: None.
+            Parameters:
+                reqURI: Requested URI (string).
+                content_type: HTTP content type (string). 
+                content_length: Lengh of content being sent.
+                Host: Holds all of the variables needed to describe an HTTP connection to a host. This includes remote host name, port and scheme (string).
         '''
         headers = """\
-        POST /auth HTTP/1.1\r
-        Content-Type: {content_type}\r
-        Content-Length: {content_length}\r
-        Host: {host}\r
+        POST /%s HTTP/1.1\r
+        Content-Type: {%s}\r
+        Content-Length: {%s}\r
+        Host: {%s}\r
         Connection: close\r
-        \r\n"""
+        \r\n""" % (reqURI, content_type, content_length, host)
 
         body = 'username=Fuzz&password=Pass'
         body_bytes = body.encode('assci')
