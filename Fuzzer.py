@@ -99,7 +99,7 @@ if __name__ == "__main__":
         except ValueError,e:
             print("[-] Error, incorrect syntax.\nTry ./Fuzzer -h.\n"\
                  "./Fuzzer --dst http://localhost --fuzz http --data lolcakes")
-            print str(e)
+            print(str(e))
     else:
         print("[-] Error, I didn't understand what you wanted to do!")
         sys.exit()
