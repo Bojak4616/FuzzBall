@@ -133,5 +133,4 @@ if __name__ == "__main__":
     '''
     url = "localhost" 
     req = RawHTTPUtils(url, 8000)
-    #req.rawHead()
     req.stringGet()
