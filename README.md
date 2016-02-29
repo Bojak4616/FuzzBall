@@ -1,4 +1,3 @@
-
 ### Setup
 pip install -r requirements.txt
 
@@ -9,7 +8,6 @@ pip install -r requirements.txt
 python -m SimpleHTTPServer 
 
 ```
-
 
 ```
 python Fuzzer.py --dst http://localhost --fuzz http --data "testData"
