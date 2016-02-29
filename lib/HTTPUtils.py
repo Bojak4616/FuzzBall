@@ -25,6 +25,7 @@
 import os
 import sys
 import socket
+from Logging import Log 
 
 class RawHTTPUtils():
     '''
@@ -36,6 +37,8 @@ class RawHTTPUtils():
         self.addr = str(address)
         self.port = int(port)
         self.host = "Fuzzball v1"
+        self.Logger = Log()
+
         try:
             self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             self.sock.connect((self.addr, self.port))
@@ -61,6 +64,8 @@ class RawHTTPUtils():
             Parameters: string value (data)
         '''
         self.sock.send('GET %s HTTP/1.1\r\nHost: %s\r\n\r\n' % (data, self.host))
+        reply = self.sock.recv(4096)
+        self.Logger.FuzzerLog(reply)
 
     def stringGet(self):
         '''
@@ -82,23 +87,19 @@ class RawHTTPUtils():
         '''
         self.sock.send("HEAD HTTP/1.1\r\nHost: %s\r\n\r\n" % self.host)
 
-    def rawPost(self, reqURI="index.html", content_type="text/html", content_length=40, host):
+    def rawPost(self):
         '''
             Name: rawPost
             Description: rawHead request using sockets
-            Parameters:
-                reqURI: Requested URI (string).
-                content_type: HTTP content type (string). 
-                content_length: Lengh of content being sent.
-                Host: Holds all of the variables needed to describe an HTTP connection to a host. This includes remote host name, port and scheme (string).
+            Parameters: None.
         '''
         headers = """\
-        POST /%s HTTP/1.1\r
-        Content-Type: {%s}\r
-        Content-Length: {%s}\r
-        Host: {%s}\r
+        POST /auth HTTP/1.1\r
+        Content-Type: {content_type}\r
+        Content-Length: {content_length}\r
+        Host: {host}\r
         Connection: close\r
-        \r\n""" % (reqURI, content_type, content_length, host)
+        \r\n"""
 
         body = 'username=Fuzz&password=Pass'
         body_bytes = body.encode('assci')
@@ -136,4 +137,6 @@ if __name__ == "__main__":
     '''
     url = "localhost" 
     req = RawHTTPUtils(url, 8000)
-    req.stringGet()
+    #req.rawHead()
+    #req.stringGet()
+    req.rawGet()
