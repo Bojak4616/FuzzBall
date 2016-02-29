@@ -28,7 +28,6 @@ try:
     import argparse 
     import random
     import threading
-
     from lib.HTTPUtils import RawHTTPUtils
 except ImportError as error:
     print("Error is %s" % error)
