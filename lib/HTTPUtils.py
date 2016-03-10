@@ -25,7 +25,6 @@
 import os
 import sys
 import socket
-from Logging import Log 
 
 class RawHTTPUtils():
     '''
@@ -36,9 +35,7 @@ class RawHTTPUtils():
     def __init__(self, address, port):
         self.addr = str(address)
         self.port = int(port)
-        self.host = "Fuzzball v1"
-        self.Logger = Log()
-
+        self.buff = 4096
         try:
             self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             self.sock.connect((self.addr, self.port))
@@ -46,90 +43,66 @@ class RawHTTPUtils():
             print("[ERROR] %s " % msg)
             sys.exit(0)
 
-    def readEvilStrings(self, stringFile="EvilStrings.txt"):
-        '''
-            Name: readEvilStrings
-            Parameters: stringFile: Where the evil strings are kept.
-            Return: List of strings.
-        '''
-        with open(stringFile) as fin:
-            stringList = fin.readlines()
-
-        return (stringList)
-
-    def rawGet(self, data="/index.html"):
+    def rawGet(self, data="/index.html", host="www.example.com"):
         '''
             Name: rawGet
             Description: GET request using sockets.
-            Parameters: string value (data)
-        '''
-        self.sock.send('GET %s HTTP/1.1\r\nHost: %s\r\n\r\n' % (data, self.host))
-        reply = self.sock.recv(4096)
-        self.Logger.FuzzerLog(reply)
+            Parameters: 
+                data: URI
+                host: Originating host
 
-    def stringGet(self):
+            Return: Contents of GET response.
         '''
-            Name: stringGet
-            Parameters: self.
-            Return: Nothing
-        '''
-        evilContents = self.readEvilStrings()
+        self.sock.send('GET %s HTTP/1.1\r\nHost: %s\r\n\r\n' % (data, host))
+        return self.sock.recv(self.buff)
+        self.sock.close()
 
-        for data in evilContents:
-            print("[+] Sent %s to %s" % (data, self.addr))
-            self.rawGet(data)
-
-    def rawHead(self):
+    def rawHead(self, host="example.com"):
         '''
             Name: rawHead
             Description: rawHead request using sockets.
             Parameters: None.
+            Return: Result of HEAD request.
         '''
-        self.sock.send("HEAD HTTP/1.1\r\nHost: %s\r\n\r\n" % self.host)
+        self.sock.send("HEAD HTTP/1.1\r\nHost: %s\r\n\r\n" % host)
+        return self.sock.recv(self.buff)
+        self.sock.close()
 
-    def rawPost(self):
+    def rawPost(self, PostURI="/", contentType="Accept: text/plain", contentLen= "9001", bodyContents="Username:Testing", host="example.com"):
         '''
             Name: rawPost
-            Description: rawHead request using sockets
-            Parameters: None.
+            Description: Raw socket post library.
+            Parameters:
+                PostURI: Specify URI.
+                contentType: Specicy content type.
+                contentLen: Specify content length.
+                bodyContents: Specify body payload of HTTP POST request.
+                host: Specify origin host.
+            Return: Response contents of HTTP POST.
         '''
-        headers = """\
-        POST /auth HTTP/1.1\r
-        Content-Type: {content_type}\r
-        Content-Length: {content_length}\r
-        Host: {host}\r
-        Connection: close\r
-        \r\n"""
 
-        body = 'username=Fuzz&password=Pass'
-        body_bytes = body.encode('assci')
+        headers = """\r
+        POST /%s HTTP/1.1\r
+        Content-Type: %s\r
+        Content-Length: %s\r
+        Host: %s\r
+        Connection: close\r
+        \r\n""" % (PostURI,contentType, contentLen, host)
+
+        body = bodyContents
+        body_bytes = body.encode('ascii')
+
         header_bytes = headers.format(
             content_type="application/x-www-form-urlencoded",
             content_length=len(body_bytes),
-            host=self.addr + ":" + self.port
+            host=self.addr + ":" + str(self.port)
         ).encode('iso-8859-1')
 
         payload = header_bytes +  body_bytes
         self.sock.sendall(payload)
 
-class RandomDataGenerator():
-    '''
-        Name: RandomDataGenerator
-        Purpose: Generating random text in a variety of languages 
-                 to send to an end point. This should be used in conjunction
-                 with the HTTPUtils in order to create unique body POST requests.
-
-        Use-case: Can be used to test unicode support against web application. 
-    '''
-
-    def devRand(self, numBytes=50):
-        '''
-            Portable way to return random bytes.
-            Linux/Unix uses /dev/urandom
-            Windows: CryptGetRandom()
-        '''
-        return os.urandom(numBytes)
-
+        return self.sock.recv(self.buff)
+        self.sock.close()
 
 if __name__ == "__main__":
     '''
@@ -137,6 +110,6 @@ if __name__ == "__main__":
     '''
     url = "localhost" 
     req = RawHTTPUtils(url, 8000)
-    #req.rawHead()
-    #req.stringGet()
-    req.rawGet()
+    #req.rawGet("/", "localhost")
+    #print(req.rawHead(host="chaimsanders.com"))
+    #print(req.rawPost(host="localhost"))
