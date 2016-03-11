@@ -36,6 +36,7 @@ class RawHTTPUtils():
         self.addr = str(address)
         self.port = int(port)
         self.buff = 4096
+
         try:
             self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             self.sock.connect((self.addr, self.port))

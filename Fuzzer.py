@@ -21,7 +21,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 '''
 
-__author__ = "Jared E. Stroud, Jon Meyers"
+__author__ = "Jared E. Stroud, Jon Myers"
 
 try:
     import sys
@@ -45,7 +45,7 @@ class cmdEval:
             Parameters: usrCmd (user specified command)
                         address (ip address)
                         fuzzData (data to send)
-        ''' 
+        '''
         fuzzHTTP = RawHTTPUtils(str(address), int(port))
         command = { 
                     "http" :  fuzzHTTP.rawGet(fuzzData)
@@ -78,7 +78,12 @@ if __name__ == "__main__":
         data = ''.join(args.data) # Removes list bindings.
         dst =  ''.join(args.dst)  # Removes list bindings.
         fuzz = ''.join(args.fuzz) # Removes list bindings.
-        port = ''.join(args.port) # Removes list bindings.
+        #port = ''.join(args.port) # Removes list bindings.
+        if args.port == 80:
+            port =''.join(str(args.port))
+        else:
+            port = ''.join(args.port)
+
         if args.threads == 1:
             threads = ''.join(str(args.threads))
         else:
