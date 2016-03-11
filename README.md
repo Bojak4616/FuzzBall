@@ -10,11 +10,11 @@ python -m SimpleHTTPServer
 ```
 
 ```
-python Fuzzer.py --dst http://localhost --fuzz http --data "testData"
+python Fuzzer.py --dst http://localhost(OR 127.0.0.1) --fuzz http --data "testData" --port 8000
 
 or
 
-./Fuzzer --dst http://localhost --fuzz http --data "testData" 
+./Fuzzer --dst http://localhost(127.0.0.1 --fuzz http --data "testData" --port 8000 
 
 ```
 
